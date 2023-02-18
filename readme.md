@@ -5,7 +5,9 @@ Plugin for paper version ```1.19.3```
 ## Installation
  - Get compiled jar file from `target/` or newest release
  - Copy it to your minecraft server's `plugins/` directory
- - Reload or restart
+ - Start your server
+ - Adjust `config.yml` and `combos.yml` to your needs
+ - Use `/arena reload` to reload
 
 ## Usage
  - Create arena using `/arena create <name>`
@@ -13,7 +15,7 @@ Plugin for paper version ```1.19.3```
  - Start the arena `/arena start <name>`
  - Play!
 
-## Block Placements:
+## Block Placements (default config):
  - Combos: (Place one block on another, must be in order, down, up)
    - Sponge + Ice -> Sets Rain and gives you Packed Ice
    - Magma Block on the Ice Block -> Cancels rain ( must be used right after placing the Ice)
@@ -23,9 +25,6 @@ Plugin for paper version ```1.19.3```
    - Twisting Vines + Shroomlight -> Gives you 4x Netherrack
    - Stone + Dripstone -> Gives you 4x Gravel
    - Gravel + Soul Lantern -> Gives you Lantern
- - Interactions:
-   - Place furnace and click on the fuel slot -> Gives you 2x Coal, destroys furnace
-
 
 ## Compile
  - Install Maven
