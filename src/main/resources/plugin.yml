@@ -8,7 +8,7 @@ description: block battle implementation
 commands:
   arena:
     description: Arena Manager Command
-    usage: /arena <create|delete|start|stop|list|add_player|remove_player|clean>
+    usage: /arena help
     alias: []
     permissions: blockbattle.arena
 
