@@ -3,9 +3,11 @@ package me.reversee.blockbattle.listeners;
 import me.reversee.blockbattle.Arena;
 import me.reversee.blockbattle.Arenas;
 import me.reversee.blockbattle.Blockbattle;
+import me.reversee.blockbattle.mechanics.Combo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -17,13 +19,19 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import java.util.*;
 
 import static java.lang.Math.floor;
+import static java.lang.Math.random;
+import static me.reversee.blockbattle.mechanics.Combos.comboList;
 
 public class BlockListener implements Listener{
 
     private Blockbattle plugin;
+
+    public BlockListener(Blockbattle _plugin) {
+        this.plugin = _plugin;
+    }
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
@@ -34,8 +42,8 @@ public class BlockListener implements Listener{
         Arena arena = Arenas.getArenaByPlayer(player);
         if (arena == null) { return; }
         if (!arena.isStarted()) { return; }
-        switch (event.getSlotType()) {
-            case RESULT:
+        /*switch (event.getSlotType()) {
+            //case RESULT:
             case FUEL:
                 event.setCancelled(true);
                 player.sendMessage("Secret Move: Get Coal from Furnace");
@@ -45,7 +53,7 @@ public class BlockListener implements Listener{
                         ).getLocation()
                 ).getBlock().setType(Material.AIR);
                 player.getInventory().addItem(new ItemStack(Material.COAL, 2));
-        }
+        }*/
     }
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
@@ -53,6 +61,7 @@ public class BlockListener implements Listener{
         Arena arena = Arenas.getArenaByPlayer(player);
         if (arena == null) { return; }
         if (!arena.isStarted()) { return; }
+        if (plugin.getConfig().getBoolean("allowBreakingBlocks")) { return; }
         event.setCancelled(true);
         event.getPlayer().sendMessage("Don't break");
     }
@@ -81,6 +90,68 @@ public class BlockListener implements Listener{
         arena.lastBlockPlaced = event.getBlockPlaced();
         arena.blocksPlaced.add(event.getBlockPlaced());
 
+        for (Combo combo : comboList) {
+            if (lastBlockPlaced == null)
+                break;
+            if (!(lastBlockPlaced.getLocation().getBlockY() == location.getBlockY() - 1))
+                break;
+            if (combo.upBlock == block && combo.downBlock == lastBlockPlaced.getType()) {
+                player.sendMessage("Used combo: " + combo.name);
+                if (combo.self_destruct) {
+                    lastBlockPlaced.setType(Material.AIR);
+                    event.getBlockPlaced().setType(Material.AIR);
+                }
+                boolean giveBlocks = false;
+                List<Material> blocksToGive = new ArrayList<Material>();
+                int blockQuantity = 0;
+                Particle particle = combo.particle;
+                for (Map.Entry<String, String> set : combo.result.entrySet()) {
+                    switch (set.getKey()) {
+                        case "weather_rain":
+                            if (set.getValue().equals("true")) {
+                                player.getWorld().setStorm(true);
+                                player.getWorld().setWeatherDuration(400);
+                            } else {
+                                player.getWorld().setStorm(false);
+                                player.getWorld().setWeatherDuration(0);
+                            }
+                            break;
+                        case "give_item":
+                            List<Material> ml = new ArrayList<Material>();
+                            String data = set.getValue().replace("[","").replace("]","").replace(" ", "");
+                            List<String> ol = new ArrayList<String>(Arrays.asList(data.split(",")));
+                            for (String s : ol) {
+                                ml.add(Material.valueOf(s));
+                            }
+                            blocksToGive = ml;
+                            giveBlocks = true;
+                            break;
+                        case "give_quantity":
+                            blockQuantity = Integer.parseInt(set.getValue());
+                            giveBlocks = true;
+                            break;
+                        case "set_time":
+                            player.getWorld().setTime(Integer.parseInt(set.getValue()));
+                            break;
+                    }
+                }
+                if (giveBlocks) {
+                    for (Material mat : blocksToGive) {
+                        player.getInventory().addItem(new ItemStack(mat, blockQuantity));
+                    }
+                }
+                Random rand = new Random();
+                int particleCount = rand.nextInt((80 - 20) + 1) + 20;
+                player.getWorld().spawnParticle(
+                        particle,
+                        event.getBlockPlaced().getX(),
+                        event.getBlockPlaced().getY() + 1,
+                        event.getBlockPlaced().getZ(),
+                        particleCount
+                );
+            }
+        }
+
         //event.getPlayer().sendMessage(
         //        "Placed: " + block.toString() +
         //                " | x: " + floor(location.getBlockX()) +
@@ -89,6 +160,7 @@ public class BlockListener implements Listener{
         //);
 
         // check for combo
+        /*
         if (lastBlockPlaced != null) {
             if ( (lastBlockPlaced.getType() == Material.SPONGE && block == Material.ICE)
                     && (lastBlockPlaced.getLocation().getBlockY() == location.getBlockY() - 1)
@@ -164,9 +236,9 @@ public class BlockListener implements Listener{
                 event.setCancelled(false);
                 return;
             }
-        }
+        } */
 
-        // cancel
+        // don't cancel
         event.setCancelled(false);
     }
 }

@@ -3,6 +3,7 @@ package me.reversee.blockbattle.commands;
 import me.reversee.blockbattle.Arena;
 import me.reversee.blockbattle.Arenas;
 import me.reversee.blockbattle.Blockbattle;
+import me.reversee.blockbattle.mechanics.Combo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -19,6 +20,7 @@ import java.util.*;
 
 import static java.lang.Math.floor;
 import static me.reversee.blockbattle.Arenas.*;
+import static me.reversee.blockbattle.mechanics.Combos.comboList;
 
 public class ArenaCommand implements CommandExecutor, TabCompleter {
 
@@ -197,9 +199,15 @@ public class ArenaCommand implements CommandExecutor, TabCompleter {
         }
 
         if (Objects.equals(args[0].toLowerCase(), "dev")) {
-            sender.sendMessage("allowBreakingBlocks: " + Objects.requireNonNull(plugin.getConfig().getString("allowBreakingBlocks")));
-            sender.sendMessage("rain_combo.down: " +Objects.requireNonNull(plugin.getComboConfig().getString("rain_combo.down")));
-            sender.sendMessage("rain_combo.up: " +Objects.requireNonNull(plugin.getComboConfig().getString("rain_combo.up")));
+            for (Combo combo : comboList) {
+                plugin.getLogger().info("name: " + combo.name);
+                plugin.getLogger().info("up: " + combo.upBlock.toString());
+                plugin.getLogger().info("down: " + combo.downBlock.toString());
+                plugin.getLogger().info("self_destruct: " + combo.self_destruct);
+                for (Map.Entry<String, String> set : combo.result.entrySet()) {
+                    plugin.getLogger().info(set.getKey() + " : " + set.getValue());
+                }
+            }
         }
 
         return true;

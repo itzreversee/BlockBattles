@@ -2,6 +2,7 @@ package me.reversee.blockbattle;
 
 import me.reversee.blockbattle.commands.ArenaCommand;
 import me.reversee.blockbattle.listeners.BlockListener;
+import me.reversee.blockbattle.mechanics.Combos;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -27,6 +28,8 @@ public final class Blockbattle extends JavaPlugin {
         pm.registerEvents(new BlockListener(this), this);
 
         saveConfigs();
+        Combos.setPlugin(this);
+        Combos.loadComboMap();
     }
     void saveConfigs() {
         this.saveDefaultConfig();
@@ -52,6 +55,7 @@ public final class Blockbattle extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Combos.loadComboMap();
     }
 
     public FileConfiguration getComboConfig() {
