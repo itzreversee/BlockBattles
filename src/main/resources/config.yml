@@ -1,0 +1,25 @@
+version: 1.1
+
+# allows breaking blocks while the arena is started
+# default: false
+allowBreakingBlocks: false
+
+# sets the item pool
+
+# base, is equal to the items that are required as first, to create a combo
+# you can get names of the items you can use here: https://jd.papermc.io/paper/1.19/org/bukkit/Material.html
+base_itemPool: [ SPONGE, OAK_FENCE, STONE, TWISTING_VINES ]
+combo_itemPool: [ ICE, MAGMA_BLOCK, SOUL_LANTERN, SHROOMLIGHT, POINTED_DRIPSTONE, GLOWSTONE ]
+
+# one-time use blocks
+onetime_itemPool: [ FURNACE, GLASS ]
+
+# how many items to give to the player
+# if set higher than item pool size, it will limit to the item pool size
+# be aware that it may break, I recommend you setting these values lower or equal to the item pool size
+base_count: 4
+combo_count: 4
+onetime_count: 1
+
+# allows repeating items, default: false
+allowRepeating: true

@@ -1,0 +1,18 @@
+rain_combo:
+  down: SPONGE
+  up: ICE
+  self_destruct: false
+  result:
+    weather:
+      rain: true
+    give:
+      item: PACKED_ICE
+      quantity: 1
+
+rain_counter:
+  down: ICE
+  up: MAGMA_BLOCK
+  self_destruct: false
+  result:
+    weather:
+      rain: false

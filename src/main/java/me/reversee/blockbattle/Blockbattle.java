@@ -3,15 +3,20 @@ package me.reversee.blockbattle;
 import me.reversee.blockbattle.commands.ArenaCommand;
 import me.reversee.blockbattle.listeners.BlockListener;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.io.File;
 import java.util.Arrays;
 
 public final class Blockbattle extends JavaPlugin {
-    // FileConfiguration config = this.getConfig(); // needs to be implemented, https://github.com/itzreversee/EssentialsY/blob/main/src/main/java/me/reversee/essentialsy/PluginTools.java
+    private File combosConfigFile;
+    private FileConfiguration combosConfig;
+
     @Override
     public void onEnable() {
         getLogger().info("Enabled BlockBattle!");
@@ -19,14 +24,43 @@ public final class Blockbattle extends JavaPlugin {
 
         // register listeners
         PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new BlockListener(), this);
+        pm.registerEvents(new BlockListener(this), this);
 
-        // this.saveDefaultConfig();
+        saveConfigs();
+    }
+    void saveConfigs() {
+        this.saveDefaultConfig();
+
+        combosConfigFile = new File(getDataFolder(), "combos.yml");
+        if (!combosConfigFile.exists()) {
+            combosConfigFile.getParentFile().mkdirs();
+            saveResource("combos.yml", false);
+        }
+        combosConfig = new YamlConfiguration();
+        try {
+            combosConfig.load(combosConfigFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void reloadConfigs() {
+        this.reloadConfig();
+        this.saveConfig();
+        try {
+            combosConfig.load(combosConfigFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public FileConfiguration getComboConfig() {
+        return this.combosConfig;
     }
 
     void registerCommands() {
-        getCommand("arena").setExecutor(new ArenaCommand());
-        getCommand("arena").setTabCompleter(new ArenaCommand());
+        getCommand("arena").setExecutor(new ArenaCommand(this));
+        getCommand("arena").setTabCompleter(new ArenaCommand(this));
     }
 
     @Override
