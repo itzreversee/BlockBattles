@@ -198,18 +198,6 @@ public class ArenaCommand implements CommandExecutor, TabCompleter {
             sendHelp(sender);
         }
 
-        if (Objects.equals(args[0].toLowerCase(), "dev")) {
-            for (Combo combo : comboList) {
-                plugin.getLogger().info("name: " + combo.name);
-                plugin.getLogger().info("up: " + combo.upBlock.toString());
-                plugin.getLogger().info("down: " + combo.downBlock.toString());
-                plugin.getLogger().info("self_destruct: " + combo.self_destruct);
-                for (Map.Entry<String, String> set : combo.result.entrySet()) {
-                    plugin.getLogger().info(set.getKey() + " : " + set.getValue());
-                }
-            }
-        }
-
         return true;
     }
 
