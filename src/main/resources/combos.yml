@@ -1,82 +1,114 @@
 rain_combo:
-  down: SPONGE
-  up: ICE
+  blocks:
+    - SPONGE
+    - ICE
+  ignore_order: false
+  direction: vertical
   self_destruct: false
   cancel_event: false
   particle: DRIP_WATER
   result:
+    give_points: 1
     weather_rain: true
     give_item:
       - PACKED_ICE
     give_quantity: 1
 
 rain_counter:
-  down: ICE
-  up: MAGMA_BLOCK
+  blocks:
+    - ICE
+    - MAGMA_BLOCK
+  ignore_order: false
+  direction: vertical
   self_destruct: false
   cancel_event: false
   particle: SMOKE_LARGE
   result:
+    give_points: 1
     weather_rain: false
 
 fence_lantern:
-  down: OAK_FENCE
-  up: SOUL_LANTERN
+  blocks:
+    - OAK_FENCE
+    - SOUL_LANTERN
+  ignore_order: false
+  direction: horizontal
   self_destruct: false
   cancel_event: false
   particle: DAMAGE_INDICATOR
   result:
+    give_points: 1
     give_item:
       - NETHERITE_BLOCK
     give_quantity: 2
 
 fence_make_day:
-  down: OAK_FENCE
-  up: GLOWSTONE
+  blocks:
+    - OAK_FENCE
+    - GLOWSTONE
+  ignore_order: false
+  direction: vertical
   self_destruct: false
   cancel_event: false
   particle: VILLAGER_HAPPY
   result:
+    give_points: 1
     set_time: 3000
 
 fence_make_night:
-  down: OAK_FENCE
-  up: SHROOMLIGHT
+  blocks:
+    - OAK_FENCE
+    - SHROOMLIGHT
+  ignore_order: false
+  direction: vertical
   self_destruct: false
   cancel_event: false
   particle: VILLAGER_ANGRY
   result:
+    give_points: 1
     set_time: 16000
 
 vines_shroomlight:
-  down: TWISTING_VINES
-  up: SHROOMLIGHT
+  blocks:
+    - TWISTING_VINES
+    - SHROOMLIGHT
+  ignore_order: true
+  direction: vertical
   self_destruct: false
   cancel_event: false
   particle: DAMAGE_INDICATOR
   result:
+    give_points: 1
     give_item:
       - NETHERRACK
     give_quantity: 4
 
 stone_dripstone:
-  down: STONE
-  up: POINTED_DRIPSTONE
+  blocks:
+    - STONE
+    - POINTED_DRIPSTONE
+  ignore_order: true
+  direction: vertical
   self_destruct: false
   cancel_event: false
   particle: FALLING_DRIPSTONE_WATER
   result:
+    give_points: 1
     give_item:
       - GRAVEL
     give_quantity: 4
 
 gravel_lantern:
-  down: GRAVEL
-  up: SOUL_LANTERN
+  blocks:
+    - GRAVEL
+    - SOUL_LANTERN
+  ignore_order: true
+  direction: vertical
   self_destruct: false
   cancel_event: false
   particle: FIREWORKS_SPARK
   result:
+    give_points: 1
     give_item:
       - LANTERN
     give_quantity: 1

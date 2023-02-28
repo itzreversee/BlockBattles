@@ -4,6 +4,7 @@ import me.reversee.blockbattle.Arena;
 import me.reversee.blockbattle.Arenas;
 import me.reversee.blockbattle.Blockbattle;
 import me.reversee.blockbattle.mechanics.Combo;
+import me.reversee.blockbattle.mechanics.Combos;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -90,22 +91,19 @@ public class BlockListener implements Listener{
         arena.lastBlockPlaced = event.getBlockPlaced();
         arena.blocksPlaced.add(event.getBlockPlaced());
 
-        for (Combo combo : comboList) {
-            if (lastBlockPlaced == null)
-                break;
-            if (!(lastBlockPlaced.getLocation().getBlockY() == location.getBlockY() - 1))
-                break;
-            if (combo.upBlock == block && combo.downBlock == lastBlockPlaced.getType()) {
-                player.sendMessage("Used combo: " + combo.name);
-                if (combo.self_destruct) {
+        Combo combo = Combos.getComboByBlocks(arena.blocksPlaced);
+
+        if (combo != null) {
+            player.sendMessage("Used combo: " + combo.name);
+            if (combo.self_destruct) {
                     lastBlockPlaced.setType(Material.AIR);
                     event.getBlockPlaced().setType(Material.AIR);
-                }
-                boolean giveBlocks = false;
-                List<Material> blocksToGive = new ArrayList<Material>();
-                int blockQuantity = 0;
-                Particle particle = combo.particle;
-                for (Map.Entry<String, String> set : combo.result.entrySet()) {
+            }
+            boolean giveBlocks = false;
+            List<Material> blocksToGive = new ArrayList<Material>();
+            int blockQuantity = 0;
+            Particle particle = combo.particle;
+            for (Map.Entry<String, String> set : combo.result.entrySet()) {
                     switch (set.getKey()) {
                         case "weather_rain":
                             if (set.getValue().equals("true")) {
@@ -133,24 +131,26 @@ public class BlockListener implements Listener{
                         case "set_time":
                             player.getWorld().setTime(Integer.parseInt(set.getValue()));
                             break;
+                        case "give_points":
+                            break; // TODO: IMPLEMENT POINTS
+                        default: break;
                     }
                 }
-                if (giveBlocks) {
-                    for (Material mat : blocksToGive) {
-                        player.getInventory().addItem(new ItemStack(mat, blockQuantity));
-                    }
+            if (giveBlocks) {
+                for (Material mat : blocksToGive) {
+                    player.getInventory().addItem(new ItemStack(mat, blockQuantity));
                 }
-                Random rand = new Random();
-                int particleCount = rand.nextInt((80 - 20) + 1) + 20;
-                player.getWorld().spawnParticle(
-                        particle,
-                        event.getBlockPlaced().getX(),
-                        event.getBlockPlaced().getY() + 1,
-                        event.getBlockPlaced().getZ(),
-                        particleCount
-                );
             }
-        }
+            Random rand = new Random();
+            int particleCount = rand.nextInt((80 - 20) + 1) + 20;
+            player.getWorld().spawnParticle(
+                    particle,
+                    event.getBlockPlaced().getX(),
+                    event.getBlockPlaced().getY() + 1,
+                    event.getBlockPlaced().getZ(),
+                    particleCount
+            );
+            }
 
         //event.getPlayer().sendMessage(
         //        "Placed: " + block.toString() +
